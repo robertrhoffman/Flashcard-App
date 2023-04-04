@@ -1,83 +1,59 @@
 import React, { useState } from "react";
-import { useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-function CardList({cards}) {
-const initialState = {
-    index: 0,
-    text: "",
-    length: 0,
-    next: false,
-    isFront: true,
-  };
-   
-   
-     const [cardInfo, setCardInfo] = useState({
-  ...initialState,
-    length:cards.length,
-    text: cards[0].front
-    
-  });
+function CardList({deck, cardCount, cards}) {
+
+    const [index, setIndex] = useState(0);
+    const [flipSide, setFlipSide] = useState(true);
     const history = useHistory();
-    
-    // flip handler
-    const filpHandler = () => {
-    setCardInfo({
-      ...cardInfo,
-      text: cards[cardInfo.index].back,
-      isFront: false,
-      next: true,
-    });
-  };
- 
-const nextCard = () => {
-    if (cardInfo.index === cardInfo.length-1) {
-      if (
-        window.confirm(
-          `Restart cards?\n\nClick 'cancel' to return to the home page`
+
+    if (cardCount < 3) {
+        return (
+            <div>
+                <h4>Not Enough Cards.</h4>
+                <p>You need at least 3 cards to study. There are {`${cardCount}`} cards in this deck.</p>
+                <button 
+                    type="button" 
+                    className="btn btn-primary"
+                    onClick={() => history.push(`/decks/${deck.id}/cards/new`)}>
+                    + Add Cards
+                </button>
+            </div>
         )
-      ) {
-        setCardInfo({
-          ...initialState,
-          length: cards.length,
-          text: cards[0].front,
-        });
-      } else {
-        history.push("/");
-      }
-    } else {
-      setCardInfo({
-        ...cardInfo,
-        index: cardInfo.index + 1,
-        isFront: true,
-        next: false,
-        text: cards[cardInfo.index].front,
-      });
     }
-  };
-  
+
+//flips cards front/back w/boolean
+function flipButton() {
+    setFlipSide(!flipSide);
+}
+
+//cycles through deck; once complete, user prompted to restart or return home 
+function nextClick() {
+    if (index < (cardCount-1)) {
+        setIndex(index + 1);
+        setFlipSide(true);
+    } else {
+        const restartPrompt = window.confirm("Restart? Click 'Cancel' to return to the home page.");
+        //if restart prompt returns true, reset deck to initial conditions
+        if (restartPrompt) {
+            setIndex(0);
+            setFlipSide(true);
+        } else {
+            //if restart prompt is false, go home
+            history.push("/")
+        }
+    }
+}
+
   return (
     <div>
         <h1>CardList</h1>
         <div className="card w-75">
             <div className="card-body">
-                <h5 className="card-title">Card {cardInfo.index + 1} of {cardInfo.length}</h5>
-                    <p className="card-text">{ cardInfo.text}</p>
-                         <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={filpHandler}
-                  >
-                    Flip
-                  </button>
-                        {cardInfo.next && (
-                    <button
-                      type="button"
-                      className="btn btn-primary ml-2"
-                      onClick={nextCard}
-                    >
-                      Next
-                    </button>
-                  )}
+                <h5 className="card-title">Card {index + 1} of {cardCount}</h5>
+                    <p className="card-text">{flipSide ? cards[index]?.front : cards[index]?.back}</p>
+                        <button type="button" className="btn btn-secondary" onClick={flipButton}>Flip</button>
+                        <button type="button" className="btn btn-primary" onClick={nextClick}>Next</button>
             </div>
         </div>
     </div>

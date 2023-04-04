@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-function CardForm({ onChangeBackHandler, onChangeFrontHandler, submitHandler, front, back }) {
+function CardForm({ card, onChangeBackHandler, onChangeFrontHandler, submitHandler, front, back }) {
   const history = useHistory();
   const { deckId } = useParams;
   

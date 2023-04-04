@@ -53,15 +53,14 @@ function EditCard() {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-          <li className="breadcrumb-item"><Link to={`/decks/${deckId}`}>{deck.name}</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">Edit Card {cardId}</li>
+          <li className="breadcrumb-item"><Link to={`/decks/${deck.id}`}>{deck.name}</Link></li>
+          <li className="breadcrumb-item active" aria-current="page">`Edit Card ${card.id}`</li>
         </ol>
       </nav>
       <h1>EditCard</h1>
       <div className="card-info">
         <CardForm 
-          front={card.front}
-          back={card.back}
+          card={card}
           deck={deck}
           handleSubmit={submitHandler}
           handleChange = {onChangeHandler}
